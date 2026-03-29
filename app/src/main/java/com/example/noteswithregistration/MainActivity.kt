@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.noteswithregistration.ui.theme.AppTheme
-import com.example.noteswithregistration.ui.theme.screens.MainScreen
+import com.example.noteswithregistration.screens.MainScreen
 
 
 class MainActivity : ComponentActivity() {
