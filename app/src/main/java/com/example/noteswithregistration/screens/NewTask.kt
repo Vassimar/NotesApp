@@ -1,5 +1,6 @@
 package com.example.noteswithregistration.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,45 +11,51 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.compose.backgroundDark
-import com.example.compose.primaryDark
 
 @Composable
 fun NewTask(viewModel: MainViewModel) {
-    var text by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val toast = Toast.makeText(context, "Task added", Toast.LENGTH_SHORT)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
 
 
     ) {
-        TaskField(placeholder = "NewTask", text = text, onValueChange = { text = it })
-        Box() {
+        TaskField(
+            placeholder = "NewTask",
+            text = viewModel.text,
+            onValueChange = { viewModel.text = it })
+        Box {
             TaskField(
                 modifier = Modifier.fillMaxSize(),
-                text = description,
+                text = viewModel.description,
                 placeholder = "Description",
-                onValueChange = {description = it })
+                onValueChange = { viewModel.description = it })
 
             IconButton(
                 onClick = {
-                    val task = Task(title = text, description = description)
-                    viewModel.addTask(task)
-                    text = ""
-                    description = ""
+                    if (viewModel.text.isEmpty() || viewModel.description.isEmpty()) {
+                        toast.setText("Task name/description cannot be empty")
+                        toast.show()
+                        return@IconButton
+                    } else {
+                        val task = Task(title = viewModel.text, description = viewModel.description)
+                        viewModel.addTask(task)
+                        viewModel.text = ""
+                        viewModel.description = ""
+                        toast.show()
+                    }
+
 
                 },
                 modifier = Modifier
@@ -58,7 +65,6 @@ fun NewTask(viewModel: MainViewModel) {
                 Icon(
                     painterResource(com.example.noteswithregistration.R.drawable.outline_check_24),
                     contentDescription = "Save",
-                    tint = primaryDark,
                     modifier = Modifier.size(40.dp)
                 )
             }
@@ -84,13 +90,9 @@ fun TaskField(
         onValueChange = {
             onValueChange(it)
         },
-        placeholder = { Text(placeholder, color = primaryDark) },
-        colors = TextFieldDefaults.colors(
-            focusedTextColor = primaryDark,
-            unfocusedTextColor = primaryDark,
-            focusedContainerColor = backgroundDark,
-            unfocusedContainerColor = backgroundDark
-        )
+        placeholder = { Text(placeholder) },
+        singleLine = false
+
     )
 
 
