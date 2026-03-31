@@ -13,20 +13,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun TasksScreen(viewModel: MainViewModel) {
     val tasks = viewModel.tasks
-
-
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-
             .padding(4.dp)
     ) {
         items(tasks) { task ->
@@ -40,35 +36,66 @@ fun TasksScreen(viewModel: MainViewModel) {
                 verticalAlignment = Alignment.CenterVertically
 
             ) {
-
                 Text(text = task.title)
                 RadioButton(
                     selected = task.isActive,
                     onClick = {
                         viewModel.toggleTask(task)
-
                     }
                 )
-
-
-
             }
             HorizontalDivider(
                 thickness = 1.dp,
             )
-
         }
-
-
     }
-
-
 }
 
+@Composable
+private fun Content(
+    tasks: List<Task>,
+    OnTaskClick: (task: Task) -> Unit,
+) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(4.dp)
+    ) {
+        items(tasks) { task ->
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable {
+                        OnTaskClick(task)
+                    },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+
+            ) {
+                Text(text = task.title, color = Color.Yellow)
+                RadioButton(
+                    selected = task.isActive,
+                    onClick = {
+                        OnTaskClick(task)
+                    }
+                )
+            }
+            HorizontalDivider(
+                thickness = 1.dp,
+            )
+        }
+    }
+}
 
 @Preview
 @Composable
 fun TasksScreenPreview() {
-    TasksScreen(viewModel = viewModel())
+    content(
+        tasks = listOf(
+            Task("Task1", "Description1"),
+            Task("Task2", "Description2"),
+        ),
+        OnTaskClick = {}
+    )
 }
 

@@ -24,26 +24,24 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun NewTask(viewModel: MainViewModel) {
     val context = LocalContext.current
     val toast = Toast.makeText(context, "Task added", Toast.LENGTH_SHORT)
-
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-
-
+        modifier = Modifier.fillMaxSize()
     ) {
         TaskField(
             placeholder = "NewTask",
             text = viewModel.text,
-            onValueChange = { viewModel.text = it })
+            onValueChange = { viewModel.text = it }
+        )
         Box {
             TaskField(
                 modifier = Modifier.fillMaxSize(),
                 text = viewModel.description,
                 placeholder = "Description",
-                onValueChange = { viewModel.description = it })
-
+                onValueChange = { viewModel.description = it }
+            )
             IconButton(
                 onClick = {
+                    /* move to viewmodel*/
                     if (viewModel.text.isEmpty() || viewModel.description.isEmpty()) {
                         toast.setText("Task name/description cannot be empty")
                         toast.show()
@@ -55,10 +53,7 @@ fun NewTask(viewModel: MainViewModel) {
                         viewModel.description = ""
                         toast.show()
                     }
-
-
-                },
-                modifier = Modifier
+                }, modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(10.dp)
             ) {
@@ -69,10 +64,8 @@ fun NewTask(viewModel: MainViewModel) {
                 )
             }
         }
-
     }
 }
-
 
 @Composable
 fun TaskField(
@@ -82,8 +75,6 @@ fun TaskField(
     onValueChange: (String) -> Unit = {}
 
 ) {
-
-
     TextField(
         modifier = modifier.fillMaxWidth(),
         value = text,
@@ -92,10 +83,7 @@ fun TaskField(
         },
         placeholder = { Text(placeholder) },
         singleLine = false
-
     )
-
-
 }
 
 @Preview

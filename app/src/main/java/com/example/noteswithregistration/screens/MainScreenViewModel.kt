@@ -5,11 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
-
 class MainViewModel : ViewModel() {
-    var text by  mutableStateOf("")
-
-    var description by   mutableStateOf("")
+    var text by mutableStateOf("")
+    var description by mutableStateOf("")
     var tasks by mutableStateOf(listOf<Task>())
     fun addTask(task: Task) {
         tasks = tasks + task
@@ -21,10 +19,7 @@ class MainViewModel : ViewModel() {
             else it
         }
     }
-
-
 }
-
 
 sealed class Routes(val route: String) {
     object MainScreen : Routes("main_screen")
@@ -32,4 +27,4 @@ sealed class Routes(val route: String) {
     object NewTaskScreen : Routes("new_Task_screen")
 }
 
-data class Task(val title: String, val description: String, var isActive: Boolean = false)
+data class Task(val title: String, val description: String, val isActive: Boolean = false)

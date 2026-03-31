@@ -34,14 +34,10 @@ fun MainScreen() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
     Scaffold(
         topBar = {
             TopAppBar(
-
-                modifier = Modifier.statusBarsPadding(),
-                title = { Text(topBarText(currentRoute)) },
-
+                modifier = Modifier.statusBarsPadding(), title = { Text(topBarText(currentRoute)) },
                 actions = {
                     TopBarButton(
                         navController = navController,
@@ -53,11 +49,8 @@ fun MainScreen() {
         bottomBar = {
             NavigationBar(
                 modifier = Modifier,
-
-
-                ) {
+            ) {
                 NavigationBarItem(
-
                     selected = currentRoute == Routes.MainScreen.route,
                     onClick = { navController.navigate(Routes.MainScreen.route) },
                     icon = {
@@ -67,8 +60,7 @@ fun MainScreen() {
                         )
                     },
                     label = { Text("Home") },
-
-                    )
+                )
                 NavigationBarItem(
                     selected = currentRoute == Routes.TasksScreen.route,
                     onClick = { navController.navigate(Routes.TasksScreen.route) },
@@ -76,35 +68,24 @@ fun MainScreen() {
                         Icon(
                             painterResource(R.drawable.baseline_checklist_24),
                             contentDescription = "Tasks",
-
-
-                            )
+                        )
                     },
                     label = { Text("Tasks") },
-
-                    )
-
-
+                )
             }
-        }
-    ) { padding ->
+        }) { padding ->
         NavHost(
             modifier = Modifier.padding(padding),
             navController = navController,
             startDestination = Routes.MainScreen.route
-        )
-        {
+        ) {
             composable(Routes.MainScreen.route) {
                 if (viewModel.tasks.isEmpty()) {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-
-                    )
-                    {
+                        modifier = Modifier.fillMaxSize()
+                    ) {
                         Text(
-                            "No active tasks",
-                            modifier = Modifier.padding(10.dp)
+                            "No active tasks", modifier = Modifier.padding(10.dp)
                         )
                     }
                 } else {
@@ -118,7 +99,6 @@ fun MainScreen() {
                 NewTask(viewModel)
             }
         }
-
     }
 }
 
@@ -148,24 +128,20 @@ fun topBarText(controller: String?): String {
 
 @Composable
 fun TopBarButton(
-    controller: String?,
-    navController: NavHostController
-
+    controller: String?, navController: NavHostController
 ) {
     when (controller) {
         Routes.MainScreen.route -> {
             IconButton(onClick = {
                 navController.navigate(Routes.NewTaskScreen.route)
-            }) {
+            })
+            {
                 Icon(
                     painterResource(id = R.drawable.add),
                     modifier = Modifier.size(40.dp),
                     contentDescription = "More",
-
-                    )
-
+                )
             }
-
         }
     }
 }
