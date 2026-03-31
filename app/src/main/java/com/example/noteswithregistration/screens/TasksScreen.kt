@@ -90,7 +90,7 @@ private fun Content(
 @Preview
 @Composable
 fun TasksScreenPreview() {
-    content(
+    Content(
         tasks = listOf(
             Task("Task1", "Description1"),
             Task("Task2", "Description2"),
