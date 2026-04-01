@@ -59,7 +59,8 @@ fun ActiveTasks(viewModel: MainViewModel) {
                             } else {
                                 TextAlign.Start
                             }
-                        }, verticalAlignment = Alignment.CenterVertically
+                        },
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = task.title,
