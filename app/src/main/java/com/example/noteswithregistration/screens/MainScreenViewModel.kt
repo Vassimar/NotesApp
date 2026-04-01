@@ -19,6 +19,9 @@ class MainViewModel : ViewModel() {
             else it
         }
     }
+    fun deleteTask(task: Task) {
+        tasks = tasks - task
+    }
 }
 
 sealed class Routes(val route: String) {
