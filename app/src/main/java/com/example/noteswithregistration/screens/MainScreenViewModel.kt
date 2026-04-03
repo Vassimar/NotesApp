@@ -35,7 +35,7 @@ class MainViewModel : ViewModel() {
 sealed class Routes(val route: String) {
     object MainScreen : Routes("main_screen")
     object TasksScreen : Routes("tasks_screen")
-    object NewTaskScreen : Routes("new_Task_screen")
+    object NewTaskScreen : Routes("new_tasks_screen")
 }
 
 data class Task(

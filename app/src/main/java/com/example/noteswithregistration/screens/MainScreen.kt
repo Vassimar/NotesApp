@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,6 +40,20 @@ fun MainScreen() {
         topBar = {
             TopAppBar(
                 modifier = Modifier.statusBarsPadding(), title = { Text(topBarText(currentRoute)) },
+
+                navigationIcon = {
+                    if (currentRoute == Routes.NewTaskScreen.route) {
+                        IconButton(onClick = {
+                            navController.popBackStack()
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    }
+
+                },
                 actions = {
                     TopBarButton(
                         navController = navController,
@@ -52,7 +68,15 @@ fun MainScreen() {
             ) {
                 NavigationBarItem(
                     selected = currentRoute == Routes.MainScreen.route,
-                    onClick = { navController.navigate(Routes.MainScreen.route) },
+                    onClick = {
+                        navController.navigate(Routes.MainScreen.route) {
+                            launchSingleTop = true
+                            restoreState = true
+                            popUpTo(Routes.MainScreen.route) {
+                                saveState
+                            }
+                        }
+                    },
                     icon = {
                         Icon(
                             painterResource(id = R.drawable.outline_home_24),
@@ -63,7 +87,15 @@ fun MainScreen() {
                 )
                 NavigationBarItem(
                     selected = currentRoute == Routes.TasksScreen.route,
-                    onClick = { navController.navigate(Routes.TasksScreen.route) },
+                    onClick = {
+                        navController.navigate(Routes.TasksScreen.route) {
+                            launchSingleTop = true
+                            restoreState = true
+                            popUpTo(Routes.MainScreen.route) {
+                                saveState
+                            }
+                        }
+                    },
                     icon = {
                         Icon(
                             painterResource(R.drawable.baseline_checklist_24),
@@ -107,11 +139,10 @@ fun MainScreen() {
 fun MainScreenPreview() {
     MainScreen()
 }
-
 fun topBarText(controller: String?): String {
     return when (controller) {
         Routes.MainScreen.route -> {
-            "Create a new task"
+            "Active Tasks"
         }
 
         Routes.TasksScreen.route -> {
@@ -122,7 +153,9 @@ fun topBarText(controller: String?): String {
             "New Task"
         }
 
-        else -> "Create a new task"
+        else -> {
+            ""
+        }
     }
 }
 
@@ -131,9 +164,12 @@ fun TopBarButton(
     controller: String?, navController: NavHostController
 ) {
     when (controller) {
-        Routes.MainScreen.route -> {
+        Routes.MainScreen.route, Routes.TasksScreen.route -> {
             IconButton(onClick = {
-                navController.navigate(Routes.NewTaskScreen.route)
+                navController.navigate(Routes.NewTaskScreen.route) {
+                    launchSingleTop = true
+                    restoreState = true
+                }
             })
             {
                 Icon(
