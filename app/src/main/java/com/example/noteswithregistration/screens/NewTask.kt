@@ -47,7 +47,11 @@ fun NewTask(viewModel: MainViewModel) {
                         toast.show()
                         return@IconButton
                     } else {
-                        val task = Task(title = viewModel.text, description = viewModel.description)
+                        val task = Task(
+                            id = viewModel.count++,
+                            title = viewModel.text,
+                            description = viewModel.description
+                        )
                         viewModel.addTask(task)
                         viewModel.text = ""
                         viewModel.description = ""
@@ -81,8 +85,7 @@ fun TaskField(
         onValueChange = {
             onValueChange(it)
         },
-        placeholder = { Text(placeholder) },
-        singleLine = false
+        placeholder = { Text(placeholder) }
     )
 }
 

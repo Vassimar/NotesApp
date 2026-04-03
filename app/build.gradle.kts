@@ -42,8 +42,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.compose.material.icons)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.material)
     implementation(libs.material3)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

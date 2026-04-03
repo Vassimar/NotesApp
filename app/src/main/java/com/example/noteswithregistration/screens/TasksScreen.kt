@@ -92,8 +92,8 @@ private fun Content(
 fun TasksScreenPreview() {
     Content(
         tasks = listOf(
-            Task("Task1", "Description1"),
-            Task("Task2", "Description2"),
+            Task(1,"Task1", "Description1"),
+            Task(2,"Task2", "Description2"),
         ),
         OnTaskClick = {}
     )
