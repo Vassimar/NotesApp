@@ -138,7 +138,7 @@ fun TaskItem(
                         onValueChange = { description = it },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding( 16.dp),
+                            .padding(16.dp),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
@@ -173,7 +173,6 @@ fun TaskItem(
 @Preview
 @Composable
 fun TaskItemPreview() {
-
     TaskItem(
         task = Task(1, "Task1", "Description1"),
         isEdited = true,
@@ -182,6 +181,3 @@ fun TaskItemPreview() {
         viewModel = viewModel()
     )
 }
-
-
-

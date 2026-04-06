@@ -81,6 +81,3 @@ fun TaskField(
 fun NewTaskPreview() {
     NewTask(viewModel = viewModel())
 }
-
-
-
