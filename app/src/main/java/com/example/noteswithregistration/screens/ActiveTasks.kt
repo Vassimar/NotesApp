@@ -40,7 +40,7 @@ fun ActiveTasks(viewModel: MainViewModel) {
     val tasks = viewModel.tasks.filter { it.isActive }
 
     if (tasks.isEmpty()) {
-        Text("No Active Tasks", modifier = Modifier.padding(10.dp))
+        Text("No Active Tasks", modifier = Modifier.padding(16.dp))
         return
     }
     LazyColumn(
@@ -97,7 +97,6 @@ fun TaskItem(
             onEditToggle()
             if (expanded) {
                 viewModel.updateTask(task, text, description)
-                expanded = false
             } else {
                 expanded = true
             }
@@ -123,9 +122,11 @@ fun TaskItem(
                     )
                 )
             } else {
-                Text(
+                TaskText(
                     text = task.title,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
                     style = titleStyle,
                     textAlign = titleAlign
                 )
@@ -137,7 +138,7 @@ fun TaskItem(
                         onValueChange = { description = it },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 16.dp),
+                            .padding( 16.dp),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
@@ -152,7 +153,7 @@ fun TaskItem(
                         text = task.description,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 16.dp),
+                            .padding(16.dp),
                         style = AppTypography.bodyMedium
                     )
                 }
@@ -172,6 +173,7 @@ fun TaskItem(
 @Preview
 @Composable
 fun TaskItemPreview() {
+
     TaskItem(
         task = Task(1, "Task1", "Description1"),
         isEdited = true,

@@ -1,7 +1,5 @@
 package com.example.noteswithregistration.screens
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -19,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -39,20 +36,10 @@ fun MainScreen() {
     Scaffold(
         topBar = {
             TopAppBar(
-                modifier = Modifier.statusBarsPadding(), title = { Text(topBarText(currentRoute)) },
-
+                modifier = Modifier.statusBarsPadding(),
+                title = { Text(topBarText(currentRoute)) },
                 navigationIcon = {
-                    if (currentRoute == Routes.NewTaskScreen.route) {
-                        IconButton(onClick = {
-                            navController.popBackStack()
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back"
-                            )
-                        }
-                    }
-
+                    TopBarNavigationIcon(currentRoute, navController)
                 },
                 actions = {
                     TopBarButton(
@@ -63,19 +50,14 @@ fun MainScreen() {
             )
         },
         bottomBar = {
-            NavigationBar(
-                modifier = Modifier,
-            ) {
+            NavigationBar{
                 NavigationBarItem(
                     selected = currentRoute == Routes.MainScreen.route,
                     onClick = {
-                        navController.navigate(Routes.MainScreen.route) {
-                            launchSingleTop = true
-                            restoreState = true
-                            popUpTo(Routes.MainScreen.route) {
-                                saveState
-                            }
-                        }
+                        onClickNavigation(
+                            navController = navController,
+                            destination = Routes.MainScreen.route,
+                        )
                     },
                     icon = {
                         Icon(
@@ -88,13 +70,10 @@ fun MainScreen() {
                 NavigationBarItem(
                     selected = currentRoute == Routes.TasksScreen.route,
                     onClick = {
-                        navController.navigate(Routes.TasksScreen.route) {
-                            launchSingleTop = true
-                            restoreState = true
-                            popUpTo(Routes.MainScreen.route) {
-                                saveState
-                            }
-                        }
+                        onClickNavigation(
+                            navController = navController,
+                            destination = Routes.TasksScreen.route,
+                        )
                     },
                     icon = {
                         Icon(
@@ -112,17 +91,7 @@ fun MainScreen() {
             startDestination = Routes.MainScreen.route
         ) {
             composable(Routes.MainScreen.route) {
-                if (viewModel.tasks.isEmpty()) {
-                    Box(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Text(
-                            "No active tasks", modifier = Modifier.padding(10.dp)
-                        )
-                    }
-                } else {
-                    ActiveTasks(viewModel)
-                }
+                ActiveTasks(viewModel)
             }
             composable(Routes.TasksScreen.route) {
                 TasksScreen(viewModel)
@@ -134,11 +103,6 @@ fun MainScreen() {
     }
 }
 
-@Preview
-@Composable
-fun MainScreenPreview() {
-    MainScreen()
-}
 fun topBarText(controller: String?): String {
     return when (controller) {
         Routes.MainScreen.route -> {
@@ -178,6 +142,37 @@ fun TopBarButton(
                     contentDescription = "More",
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun TopBarNavigationIcon(
+    currentRoute: String?,
+    navController: NavHostController
+) {
+    if (currentRoute == Routes.NewTaskScreen.route) {
+        IconButton(onClick = {
+            navController.popBackStack()
+        }) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back"
+            )
+        }
+    }
+}
+
+fun onClickNavigation(
+    navController: NavHostController,
+    destination: String,
+    home: String = Routes.MainScreen.route
+) {
+    navController.navigate(destination) {
+        launchSingleTop = true
+        restoreState = true
+        popUpTo(home) {
+            saveState
         }
     }
 }

@@ -36,7 +36,10 @@ fun TasksScreen(viewModel: MainViewModel) {
                 verticalAlignment = Alignment.CenterVertically
 
             ) {
-                Text(text = task.title)
+                Text(
+                    text = task.title,
+                    modifier = Modifier.padding(16.dp)
+                )
                 RadioButton(
                     selected = task.isActive,
                     onClick = {
@@ -92,8 +95,8 @@ private fun Content(
 fun TasksScreenPreview() {
     Content(
         tasks = listOf(
-            Task(1,"Task1", "Description1"),
-            Task(2,"Task2", "Description2"),
+            Task(1, "Task1", "Description1"),
+            Task(2, "Task2", "Description2"),
         ),
         onTaskClick = {}
     )
