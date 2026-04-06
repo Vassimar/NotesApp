@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.noteswithregistration.R
 import com.example.noteswithregistration.ui.theme.AppTypography
+
 @Composable
 fun ActiveTasks(viewModel: MainViewModel) {
     val tasks = viewModel.tasks.filter { it.isActive }
@@ -49,21 +51,16 @@ fun ActiveTasks(viewModel: MainViewModel) {
         items(tasks) { task ->
             val isEdited = viewModel.editTracker == task.id
             TaskItem(
-                task = task,
-                isEdited = isEdited,
-                onEditToggle = {
-                    viewModel.editTracker =
-                        if (isEdited) null else task.id
-                },
-                onDelete = { viewModel.deleteTask(task) },
-                viewModel = viewModel
+                task = task, isEdited = isEdited, onEditToggle = {
+                    viewModel.editTracker = if (isEdited) null else task.id
+                }, onDelete = { viewModel.deleteTask(task) }, viewModel = viewModel
             )
         }
     }
 }
+
 @Composable
 fun TaskText(
-
     modifier: Modifier = Modifier,
     text: String,
     style: TextStyle,
@@ -71,6 +68,7 @@ fun TaskText(
 ) {
     Text(text = text, modifier = modifier, style = style, textAlign = textAlign)
 }
+
 @Composable
 fun TaskItem(
     task: Task,
@@ -83,7 +81,7 @@ fun TaskItem(
     var expanded by remember { mutableStateOf(false) }
     var titleStyle by remember { mutableStateOf(AppTypography.titleMedium) }
     var titleAlign by remember { mutableStateOf(TextAlign.Start) }
-    var text  by remember { mutableStateOf(task.title) }
+    var text by remember { mutableStateOf(task.title) }
     var description by remember { mutableStateOf(task.description) }
     Row(
         modifier = modifier
@@ -93,13 +91,13 @@ fun TaskItem(
                 expanded = !expanded
                 titleStyle = if (expanded) AppTypography.titleLarge else AppTypography.titleMedium
                 titleAlign = if (expanded) TextAlign.Center else TextAlign.Start
-            },
-        verticalAlignment = Alignment.CenterVertically
+            }, verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = {
             onEditToggle()
             if (expanded) {
-                viewModel.updateTask(task,text,description)
+                viewModel.updateTask(task, text, description)
+                expanded = false
             } else {
                 expanded = true
             }
@@ -114,7 +112,15 @@ fun TaskItem(
                 TextField(
                     value = text,
                     onValueChange = { text = it },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent
+                    )
                 )
             } else {
                 Text(
@@ -131,7 +137,15 @@ fun TaskItem(
                         onValueChange = { description = it },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 16.dp)
+                            .padding(vertical = 16.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent
+                        )
                     )
                 } else {
                     TaskText(

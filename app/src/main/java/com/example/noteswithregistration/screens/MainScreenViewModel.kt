@@ -1,5 +1,7 @@
 package com.example.noteswithregistration.screens
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -15,19 +17,45 @@ class MainViewModel : ViewModel() {
     fun addTask(task: Task) {
         tasks = tasks + task
     }
+
     fun toggleTask(task: Task) {
         tasks = tasks.map {
             if (it == task) it.copy(isActive = !it.isActive)
             else it
         }
     }
+
     fun deleteTask(task: Task) {
         tasks = tasks - task
     }
-    fun updateTask(task: Task,title:String,description:String){
+
+    fun updateTask(task: Task, title: String, description: String) {
         tasks = tasks.map {
-            if (it.id == task.id) it.copy(title = title, description = description)
+            if (it.id == task.id) it.copy(
+                title = if (title.trim() == "") task.title else title,
+                description = if (description.trim() == "") task.description else description
+            )
             else it
+        }
+    }
+
+    fun taskValidationCheck(
+        context: Context,
+        successfulMessage: String,
+        duration: Int = Toast.LENGTH_SHORT,
+        unsuccessfulMessage: String? = null
+    ) {
+        if (text.isEmpty() || description.isEmpty()) {
+            Toast.makeText(context, unsuccessfulMessage, duration).show()
+            return
+        } else {
+            val task = Task(
+                id = count++, title = text, description = description
+            )
+            addTask(task)
+            text = ""
+            description = ""
+            Toast.makeText(context, successfulMessage, duration).show()
         }
     }
 }

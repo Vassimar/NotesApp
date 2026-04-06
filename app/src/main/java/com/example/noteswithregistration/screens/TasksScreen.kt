@@ -54,7 +54,7 @@ fun TasksScreen(viewModel: MainViewModel) {
 @Composable
 private fun Content(
     tasks: List<Task>,
-    OnTaskClick: (task: Task) -> Unit,
+    onTaskClick: (task: Task) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -66,7 +66,7 @@ private fun Content(
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable {
-                        OnTaskClick(task)
+                        onTaskClick(task)
                     },
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
@@ -76,7 +76,7 @@ private fun Content(
                 RadioButton(
                     selected = task.isActive,
                     onClick = {
-                        OnTaskClick(task)
+                        onTaskClick(task)
                     }
                 )
             }
@@ -95,7 +95,7 @@ fun TasksScreenPreview() {
             Task(1,"Task1", "Description1"),
             Task(2,"Task2", "Description2"),
         ),
-        OnTaskClick = {}
+        onTaskClick = {}
     )
 }
 

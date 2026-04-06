@@ -1,6 +1,5 @@
 package com.example.noteswithregistration.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,7 +22,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun NewTask(viewModel: MainViewModel) {
     val context = LocalContext.current
-    val toast = Toast.makeText(context, "Task added", Toast.LENGTH_SHORT)
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -41,22 +39,12 @@ fun NewTask(viewModel: MainViewModel) {
             )
             IconButton(
                 onClick = {
-                    /* move to viewmodel*/
-                    if (viewModel.text.isEmpty() || viewModel.description.isEmpty()) {
-                        toast.setText("Task name/description cannot be empty")
-                        toast.show()
-                        return@IconButton
-                    } else {
-                        val task = Task(
-                            id = viewModel.count++,
-                            title = viewModel.text,
-                            description = viewModel.description
-                        )
-                        viewModel.addTask(task)
-                        viewModel.text = ""
-                        viewModel.description = ""
-                        toast.show()
-                    }
+                    viewModel.taskValidationCheck(
+                        context,
+                        successfulMessage = "Task added",
+                        unsuccessfulMessage = "title/description cant be empty"
+                    )
+
                 }, modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(10.dp)
@@ -77,7 +65,6 @@ fun TaskField(
     modifier: Modifier = Modifier,
     placeholder: String,
     onValueChange: (String) -> Unit = {}
-
 ) {
     TextField(
         modifier = modifier.fillMaxWidth(),
