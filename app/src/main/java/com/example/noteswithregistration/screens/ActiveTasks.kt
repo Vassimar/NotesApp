@@ -31,13 +31,16 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.noteswithregistration.R
+import com.example.noteswithregistration.db.TaskEntity
 import com.example.noteswithregistration.ui.theme.AppTypography
+import kotlin.math.exp
 
 @Composable
 fun ActiveTasks(viewModel: MainViewModel) {
-    val tasks = viewModel.tasks.filter { it.isActive }
+    val tasks by viewModel.activeTasks.collectAsStateWithLifecycle()
 
     if (tasks.isEmpty()) {
         Text("No Active Tasks", modifier = Modifier.padding(16.dp))
@@ -51,9 +54,13 @@ fun ActiveTasks(viewModel: MainViewModel) {
         items(tasks) { task ->
             val isEdited = viewModel.editTracker == task.id
             TaskItem(
-                task = task, isEdited = isEdited, onEditToggle = {
+                task = task, isEdited = isEdited,
+                onEditToggle = {
                     viewModel.editTracker = if (isEdited) null else task.id
-                }, onDelete = { viewModel.deleteTask(task) }, viewModel = viewModel
+
+                },
+                onDelete = { viewModel.deleteTask(task) },
+                viewModel = viewModel
             )
         }
     }
@@ -71,7 +78,7 @@ fun TaskText(
 
 @Composable
 fun TaskItem(
-    task: Task,
+    task: TaskEntity,
     isEdited: Boolean,
     onEditToggle: () -> Unit,
     onDelete: () -> Unit,
@@ -80,9 +87,9 @@ fun TaskItem(
 ) {
     var expanded by remember { mutableStateOf(false) }
     var titleStyle by remember { mutableStateOf(AppTypography.titleMedium) }
-    var titleAlign by remember { mutableStateOf(TextAlign.Start) }
     var text by remember { mutableStateOf(task.title) }
     var description by remember { mutableStateOf(task.description) }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -90,16 +97,16 @@ fun TaskItem(
             .clickable {
                 expanded = !expanded
                 titleStyle = if (expanded) AppTypography.titleLarge else AppTypography.titleMedium
-                titleAlign = if (expanded) TextAlign.Center else TextAlign.Start
-            }, verticalAlignment = Alignment.CenterVertically
+            },
+        verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = {
-            onEditToggle()
-            if (expanded) {
-                viewModel.updateTask(task, text, description)
-            } else {
-                expanded = true
+            if (isEdited) {
+                viewModel.updateTask(
+                    task.copy(title = text, description = description)
+                )
             }
+            onEditToggle()
         }) {
             Icon(
                 imageVector = if (isEdited) Icons.Default.Check else Icons.Default.Edit,
@@ -111,7 +118,9 @@ fun TaskItem(
                 TextField(
                     value = text,
                     onValueChange = { text = it },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
@@ -127,11 +136,10 @@ fun TaskItem(
                     modifier = Modifier
                         .padding(16.dp)
                         .fillMaxWidth(),
-                    style = titleStyle,
-                    textAlign = titleAlign
+                    style = titleStyle
                 )
             }
-            AnimatedVisibility(expanded) {
+            AnimatedVisibility(isEdited || expanded) {
                 if (isEdited) {
                     TextField(
                         value = description,
@@ -174,7 +182,7 @@ fun TaskItem(
 @Composable
 fun TaskItemPreview() {
     TaskItem(
-        task = Task(1, "Task1", "Description1"),
+        task = TaskEntity(1, "Task1", "Description1"),
         isEdited = true,
         onEditToggle = {},
         onDelete = {},

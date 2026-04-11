@@ -18,18 +18,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.noteswithregistration.R
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
-    val viewModel: MainViewModel = viewModel()
+    val viewModel: MainViewModel = koinViewModel()
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -102,7 +102,6 @@ fun MainScreen() {
         }
     }
 }
-
 fun topBarText(controller: String?): String {
     return when (controller) {
         Routes.MainScreen.route -> {
@@ -122,7 +121,6 @@ fun topBarText(controller: String?): String {
         }
     }
 }
-
 @Composable
 fun TopBarButton(
     controller: String?, navController: NavHostController
@@ -145,7 +143,6 @@ fun TopBarButton(
         }
     }
 }
-
 @Composable
 fun TopBarNavigationIcon(
     currentRoute: String?,
@@ -162,7 +159,6 @@ fun TopBarNavigationIcon(
         }
     }
 }
-
 fun onClickNavigation(
     navController: NavHostController,
     destination: String,

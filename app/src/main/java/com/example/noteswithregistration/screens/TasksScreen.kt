@@ -11,15 +11,18 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.noteswithregistration.db.TaskEntity
 
 @Composable
 fun TasksScreen(viewModel: MainViewModel) {
-    val tasks = viewModel.tasks
+    val tasks by viewModel.allTasks.collectAsStateWithLifecycle()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -56,8 +59,8 @@ fun TasksScreen(viewModel: MainViewModel) {
 
 @Composable
 private fun Content(
-    tasks: List<Task>,
-    onTaskClick: (task: Task) -> Unit,
+    tasks: List<TaskEntity>,
+    onTaskClick: (task: TaskEntity) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -95,8 +98,8 @@ private fun Content(
 fun TasksScreenPreview() {
     Content(
         tasks = listOf(
-            Task(1, "Task1", "Description1"),
-            Task(2, "Task2", "Description2"),
+            TaskEntity(1, "Task1", "Description1"),
+            TaskEntity(2, "Task2", "Description2"),
         ),
         onTaskClick = {}
     )
