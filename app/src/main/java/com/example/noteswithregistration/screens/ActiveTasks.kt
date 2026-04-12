@@ -3,12 +3,11 @@ package com.example.noteswithregistration.screens
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -33,10 +32,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.noteswithregistration.R
 import com.example.noteswithregistration.db.TaskEntity
 import com.example.noteswithregistration.ui.theme.AppTypography
@@ -63,7 +62,7 @@ fun ActiveTasks(viewModel: MainViewModel) {
 
                 },
                 onDelete = { viewModel.deleteTask(task) },
-                viewModel = viewModel
+                onUpdate = { viewModel.updateTask(task.copy(title = it.title, description = it.description))}
             )
         }
     }
@@ -74,9 +73,16 @@ fun TaskText(
     modifier: Modifier = Modifier,
     text: String,
     style: TextStyle,
-    textAlign: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    maxLines: Int,
+    overflow: TextOverflow = TextOverflow.Ellipsis
 ) {
-    Text(text = text, modifier = modifier, style = style, textAlign = textAlign)
+    Text(text = text,
+        modifier = modifier,
+        overflow = overflow,
+        style = style,
+        textAlign = textAlign,
+        maxLines = maxLines)
 }
 
 @Composable
@@ -86,42 +92,39 @@ fun TaskItem(
     onEditToggle: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel
+    onUpdate: (task: TaskEntity) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var titleStyle by remember { mutableStateOf(AppTypography.titleMedium) }
+    val titleStyle = if (expanded) AppTypography.titleLarge else AppTypography.titleMedium
     var text by remember { mutableStateOf(task.title) }
     var description by remember { mutableStateOf(task.description) }
-
     OutlinedCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
                 expanded = !expanded
-                titleStyle = if (expanded) AppTypography.titleLarge else AppTypography.titleMedium
             },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        border = BorderStroke(1.dp, Color.Yellow),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         shape = CardDefaults.elevatedShape
     ) {
-        Box(
-            modifier = Modifier.fillMaxWidth()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
                 onClick = {
                     if (isEdited) {
-                        viewModel.updateTask(
-                            task.copy(title = text, description = description)
-                        )
+                        onUpdate(task.copy(title = text, description = description))
                     }
                     onEditToggle()
                 },
                 modifier = Modifier
-                    .align(Alignment.CenterStart)
                     .padding(end = 16.dp)
             ) {
                 Icon(
@@ -131,7 +134,8 @@ fun TaskItem(
             }
             Column(
                 modifier = Modifier
-                    .padding(vertical = 16.dp, horizontal = 32.dp),
+                    .padding(16.dp)
+                    .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (isEdited) {
@@ -155,7 +159,8 @@ fun TaskItem(
                         modifier = Modifier
                             .padding(16.dp)
                             .fillMaxWidth(),
-                        style = titleStyle
+                        style = titleStyle,
+                        maxLines = if (expanded) Int.MAX_VALUE else 1
                     )
                 }
                 AnimatedVisibility(isEdited || expanded) {
@@ -180,14 +185,15 @@ fun TaskItem(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp),
-                            style = AppTypography.bodyMedium
+                            style = AppTypography.bodyMedium,
+                           maxLines = Int.MAX_VALUE
                         )
                     }
                 }
             }
             IconButton(
                 onClick = onDelete,
-                modifier = Modifier.align(Alignment.CenterEnd)
+                modifier = Modifier
             ) {
                 Icon(
                     painterResource(R.drawable.sharp_delete_24),
@@ -197,7 +203,6 @@ fun TaskItem(
             }
         }
     }
-    Spacer(modifier = Modifier.width(3.dp))
 }
 
 @Preview
@@ -208,6 +213,6 @@ fun TaskItemPreview() {
         isEdited = true,
         onEditToggle = {},
         onDelete = {},
-        viewModel = viewModel()
+        onUpdate = {}
     )
 }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -29,34 +30,50 @@ fun TasksScreen(viewModel: MainViewModel) {
             .padding(4.dp)
     ) {
         items(tasks) { task ->
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clickable {
-                        viewModel.toggleTask(task)
-                    },
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            TaskItem(
+                task = task,
+                onTaskClick = {
+                    viewModel.toggleTask(task)
+                },
 
-            ) {
-                Text(
-                    text = task.title,
-                    modifier = Modifier.padding(16.dp)
-                )
-                RadioButton(
-                    selected = task.isActive,
-                    onClick = {
-                        viewModel.toggleTask(task)
-                    }
-                )
-            }
-            HorizontalDivider(
-                thickness = 1.dp,
             )
         }
+
     }
 }
 
+@Composable
+fun TaskItem(
+    task: TaskEntity,
+    onTaskClick: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onTaskClick()
+            },
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+
+    ) {
+        Text(
+            text = task.title,
+            modifier = Modifier
+                .weight(1f)
+                .padding(16.dp)
+        )
+        RadioButton(
+            selected = task.isActive,
+            onClick = {
+                onTaskClick()
+            }
+        )
+    }
+    HorizontalDivider(
+        thickness = 1.dp,
+    )
+}
 @Composable
 private fun Content(
     tasks: List<TaskEntity>,
