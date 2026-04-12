@@ -1,4 +1,4 @@
-simple NoteApp app for Android build with Kotlin.<br>
+simple NoteApp  for Android build with Kotlin.<br>
 Can create/set as Active/edit/delete tasks<br>
 Clean UI build with Jetpack Compose<br>
 Offline local storage build with Room<br>
