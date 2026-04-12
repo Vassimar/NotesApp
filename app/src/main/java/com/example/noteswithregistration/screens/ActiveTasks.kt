@@ -1,9 +1,10 @@
 package com.example.noteswithregistration.screens
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,8 +14,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -36,7 +40,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.noteswithregistration.R
 import com.example.noteswithregistration.db.TaskEntity
 import com.example.noteswithregistration.ui.theme.AppTypography
-import kotlin.math.exp
 
 @Composable
 fun ActiveTasks(viewModel: MainViewModel) {
@@ -90,7 +93,7 @@ fun TaskItem(
     var text by remember { mutableStateOf(task.title) }
     var description by remember { mutableStateOf(task.description) }
 
-    Row(
+    OutlinedCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
@@ -98,52 +101,43 @@ fun TaskItem(
                 expanded = !expanded
                 titleStyle = if (expanded) AppTypography.titleLarge else AppTypography.titleMedium
             },
-        verticalAlignment = Alignment.CenterVertically
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        border = BorderStroke(1.dp, Color.Yellow),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+        shape = CardDefaults.elevatedShape
     ) {
-        IconButton(onClick = {
-            if (isEdited) {
-                viewModel.updateTask(
-                    task.copy(title = text, description = description)
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            IconButton(
+                onClick = {
+                    if (isEdited) {
+                        viewModel.updateTask(
+                            task.copy(title = text, description = description)
+                        )
+                    }
+                    onEditToggle()
+                },
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(end = 16.dp)
+            ) {
+                Icon(
+                    imageVector = if (isEdited) Icons.Default.Check else Icons.Default.Edit,
+                    contentDescription = if (isEdited) "Save" else "Edit"
                 )
             }
-            onEditToggle()
-        }) {
-            Icon(
-                imageVector = if (isEdited) Icons.Default.Check else Icons.Default.Edit,
-                contentDescription = if (isEdited) "Save" else "Edit"
-            )
-        }
-        Column(modifier = Modifier.weight(1f)) {
-            if (isEdited) {
-                TextField(
-                    value = text,
-                    onValueChange = { text = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
-                    )
-                )
-            } else {
-                TaskText(
-                    text = task.title,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                    style = titleStyle
-                )
-            }
-            AnimatedVisibility(isEdited || expanded) {
+            Column(
+                modifier = Modifier
+                    .padding(vertical = 16.dp, horizontal = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 if (isEdited) {
                     TextField(
-                        value = description,
-                        onValueChange = { description = it },
+                        value = text,
+                        onValueChange = { text = it },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
@@ -151,28 +145,56 @@ fun TaskItem(
                             focusedContainerColor = Color.Transparent,
                             unfocusedContainerColor = Color.Transparent,
                             disabledContainerColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent
                         )
                     )
                 } else {
                     TaskText(
-                        text = task.description,
+                        text = task.title,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        style = AppTypography.bodyMedium
+                            .padding(16.dp)
+                            .fillMaxWidth(),
+                        style = titleStyle
                     )
                 }
+                AnimatedVisibility(isEdited || expanded) {
+                    if (isEdited) {
+                        TextField(
+                            value = description,
+                            onValueChange = { description = it },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                disabledIndicatorColor = Color.Transparent
+                            )
+                        )
+                    } else {
+                        TaskText(
+                            text = task.description,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            style = AppTypography.bodyMedium
+                        )
+                    }
+                }
             }
-        }
-        IconButton(onClick = onDelete) {
-            Icon(
-                painterResource(R.drawable.sharp_delete_24),
-                tint = Color.Red,
-                contentDescription = "Delete"
-            )
+            IconButton(
+                onClick = onDelete,
+                modifier = Modifier.align(Alignment.CenterEnd)
+            ) {
+                Icon(
+                    painterResource(R.drawable.sharp_delete_24),
+                    tint = Color.Red,
+                    contentDescription = "Delete"
+                )
+            }
         }
     }
     Spacer(modifier = Modifier.width(3.dp))
