@@ -1,4 +1,4 @@
-package com.example.noteswithregistration.DI
+package com.example.noteswithregistration.koin
 
 
 import androidx.room.Room
