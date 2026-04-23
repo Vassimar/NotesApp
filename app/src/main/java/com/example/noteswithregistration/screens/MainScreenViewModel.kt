@@ -1,8 +1,5 @@
 package com.example.noteswithregistration.screens
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.noteswithregistration.db.TaskEntity
@@ -14,7 +11,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlin.collections.emptyList
 
 class MainViewModel(
     private val repository: TaskRepository
@@ -29,33 +25,27 @@ class MainViewModel(
         SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
-
     fun addTask(task: TaskEntity) {
         viewModelScope.launch {
             repository.insertTask(task)
         }
     }
-
     fun updateTask(task: TaskEntity) {
         viewModelScope.launch {
             repository.updateTask(task)
         }
     }
-
     fun deleteTask(task: TaskEntity) {
         viewModelScope.launch {
             repository.deleteTask(task)
         }
     }
-
     fun toggleTask(task: TaskEntity) {
         viewModelScope.launch {
             repository.updateTask(task.copy(isActive = !task.isActive))
         }
     }
-
     private val _taskId = MutableStateFlow<Int?>(null)
-
     @OptIn(ExperimentalCoroutinesApi::class)
     val editTask = _taskId
         .filterNotNull()
@@ -65,13 +55,9 @@ class MainViewModel(
             SharingStarted.WhileSubscribed(5000),
             null
         )
-
     fun loadTask(taskId: Int) {
         _taskId.value = taskId
     }
-
-
-    var editTracker by mutableStateOf<Int?>(null)
 }
 
 sealed class Routes(val route: String) {
