@@ -24,7 +24,6 @@ import androidx.navigation.NavController
 @Composable
 
 fun EditTaskScreen(viewModel: MainViewModel, taskId: Int, navController: NavController) {
-
     LaunchedEffect(taskId) {
         viewModel.loadTask(taskId)
     }
