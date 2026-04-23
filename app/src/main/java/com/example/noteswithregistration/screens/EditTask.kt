@@ -42,7 +42,6 @@ fun EditTaskScreen(viewModel: MainViewModel, taskId: Int, navController: NavCont
 
         ) {
             Card (modifier = Modifier.fillMaxWidth()){
-
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = title,
