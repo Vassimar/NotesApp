@@ -102,7 +102,7 @@ fun MainScreen() {
                 NewTask(viewModel)
             }
             composable(
-                route = Routes.EditTaskScreen.route,           // "editTask/{taskId}" — the template
+                route = Routes.EditTaskScreen.route,
                 arguments = listOf(navArgument("taskId") { type = NavType.IntType })
             ) { backStackEntry ->
                 val taskId = backStackEntry.arguments?.getInt("taskId") ?: return@composable
