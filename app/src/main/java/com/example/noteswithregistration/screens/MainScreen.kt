@@ -19,10 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.noteswithregistration.R
 import org.koin.androidx.compose.koinViewModel
 
@@ -91,13 +93,20 @@ fun MainScreen() {
             startDestination = Routes.MainScreen.route
         ) {
             composable(Routes.MainScreen.route) {
-                ActiveTasks(viewModel)
+                ActiveTasks(viewModel,navController)
             }
             composable(Routes.TasksScreen.route) {
                 TasksScreen(viewModel)
             }
             composable(Routes.NewTaskScreen.route) {
                 NewTask(viewModel)
+            }
+            composable(
+                route = Routes.EditTaskScreen.route,           // "editTask/{taskId}" — the template
+                arguments = listOf(navArgument("taskId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val taskId = backStackEntry.arguments?.getInt("taskId") ?: return@composable
+                EditTaskScreen(taskId = taskId, viewModel = viewModel, navController = navController)
             }
         }
     }

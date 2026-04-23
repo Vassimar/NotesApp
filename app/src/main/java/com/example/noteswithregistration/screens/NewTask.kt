@@ -36,14 +36,14 @@ fun NewTask(viewModel: MainViewModel) {
         TaskField(
             placeholder = "NewTask",
             text = text,
-            onValueChange = { text = it.trim() }
+            onValueChange = { text = it }
         )
         Box {
             TaskField(
                 modifier = Modifier.fillMaxSize(),
                 text = description,
                 placeholder = "Description",
-                onValueChange = { description = it.trim() }
+                onValueChange = { description = it }
             )
             IconButton(
                 onClick = {

@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -19,8 +18,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,12 +33,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.example.noteswithregistration.R
 import com.example.noteswithregistration.db.TaskEntity
 import com.example.noteswithregistration.ui.theme.AppTypography
 
 @Composable
-fun ActiveTasks(viewModel: MainViewModel) {
+fun ActiveTasks(viewModel: MainViewModel, navController: NavController) {
     val tasks by viewModel.activeTasks.collectAsStateWithLifecycle()
 
     if (tasks.isEmpty()) {
@@ -54,15 +52,12 @@ fun ActiveTasks(viewModel: MainViewModel) {
             .padding(4.dp)
     ) {
         items(tasks) { task ->
-            val isEdited = viewModel.editTracker == task.id
             TaskItem(
-                task = task, isEdited = isEdited,
+                task = task,
                 onEditToggle = {
-                    viewModel.editTracker = if (isEdited) null else task.id
-
+                    navController.navigate(Routes.EditTaskScreen.withArgs(task.id))
                 },
                 onDelete = { viewModel.deleteTask(task) },
-                onUpdate = { viewModel.updateTask(task.copy(title = it.title, description = it.description))}
             )
         }
     }
@@ -77,27 +72,25 @@ fun TaskText(
     maxLines: Int,
     overflow: TextOverflow = TextOverflow.Ellipsis
 ) {
-    Text(text = text,
+    Text(
+        text = text,
         modifier = modifier,
         overflow = overflow,
         style = style,
         textAlign = textAlign,
-        maxLines = maxLines)
+        maxLines = maxLines
+    )
 }
 
 @Composable
 fun TaskItem(
     task: TaskEntity,
-    isEdited: Boolean,
     onEditToggle: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
-    onUpdate: (task: TaskEntity) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val titleStyle = if (expanded) AppTypography.titleLarge else AppTypography.titleMedium
-    var text by remember { mutableStateOf(task.title) }
-    var description by remember { mutableStateOf(task.description) }
     OutlinedCard(
         modifier = modifier
             .fillMaxWidth()
@@ -119,17 +112,12 @@ fun TaskItem(
         ) {
             IconButton(
                 onClick = {
-                    if (isEdited) {
-                        onUpdate(task.copy(title = text, description = description))
-                    }
                     onEditToggle()
-                },
-                modifier = Modifier
-                    .padding(end = 16.dp)
+                }
             ) {
                 Icon(
-                    imageVector = if (isEdited) Icons.Default.Check else Icons.Default.Edit,
-                    contentDescription = if (isEdited) "Save" else "Edit"
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit"
                 )
             }
             Column(
@@ -138,57 +126,24 @@ fun TaskItem(
                     .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (isEdited) {
-                    TextField(
-                        value = text,
-                        onValueChange = { text = it },
+                TaskText(
+                    text = task.title,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    style = titleStyle,
+                    maxLines = if (expanded) Int.MAX_VALUE else 1
+                )
+
+                AnimatedVisibility(expanded) {
+                    TaskText(
+                        text = task.description,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color.Transparent,
-                            unfocusedContainerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent
-                        )
+                        style = AppTypography.bodyMedium,
+                        maxLines = Int.MAX_VALUE
                     )
-                } else {
-                    TaskText(
-                        text = task.title,
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(),
-                        style = titleStyle,
-                        maxLines = if (expanded) Int.MAX_VALUE else 1
-                    )
-                }
-                AnimatedVisibility(isEdited || expanded) {
-                    if (isEdited) {
-                        TextField(
-                            value = description,
-                            onValueChange = { description = it },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                disabledContainerColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent
-                            )
-                        )
-                    } else {
-                        TaskText(
-                            text = task.description,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            style = AppTypography.bodyMedium,
-                           maxLines = Int.MAX_VALUE
-                        )
-                    }
                 }
             }
             IconButton(
@@ -202,17 +157,17 @@ fun TaskItem(
                 )
             }
         }
+
     }
 }
+
 
 @Preview
 @Composable
 fun TaskItemPreview() {
     TaskItem(
         task = TaskEntity(1, "Task1", "Description1"),
-        isEdited = true,
         onEditToggle = {},
         onDelete = {},
-        onUpdate = {}
     )
 }
