@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,11 +40,11 @@ import com.example.noteswithregistration.db.TaskEntity
 import com.example.noteswithregistration.ui.theme.AppTypography
 
 @Composable
-fun ActiveTasks(viewModel: MainViewModel, navController: NavController) {
+fun ActiveTasksScreen(viewModel: MainViewModel, navController: NavController) {
     val tasks by viewModel.activeTasks.collectAsStateWithLifecycle()
 
     if (tasks.isEmpty()) {
-        Text("No Active Tasks", modifier = Modifier.padding(16.dp))
+        Text(stringResource(R.string.no_active_tasks), modifier = Modifier.padding(16.dp))
         return
     }
     LazyColumn(
@@ -51,8 +52,8 @@ fun ActiveTasks(viewModel: MainViewModel, navController: NavController) {
             .fillMaxWidth()
             .padding(4.dp)
     ) {
-        items(tasks) { task ->
-            TaskItem(
+        items(tasks, key = { it.id }) { task ->
+            SelectableTaskItem(
                 task = task,
                 onEditToggle = {
                     navController.navigate(Routes.EditTaskScreen.withArgs(task.id))
@@ -64,7 +65,7 @@ fun ActiveTasks(viewModel: MainViewModel, navController: NavController) {
 }
 
 @Composable
-fun TaskText(
+fun ActiveTaskText(
     modifier: Modifier = Modifier,
     text: String,
     style: TextStyle,
@@ -83,13 +84,13 @@ fun TaskText(
 }
 
 @Composable
-fun TaskItem(
+fun SelectableTaskItem(
     task: TaskEntity,
     onEditToggle: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember(task.id) { mutableStateOf(false) }
     val titleStyle = if (expanded) AppTypography.titleLarge else AppTypography.titleMedium
     OutlinedCard(
         modifier = modifier
@@ -117,7 +118,7 @@ fun TaskItem(
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit"
+                    contentDescription = stringResource(R.string.edit)
                 )
             }
             Column(
@@ -126,7 +127,7 @@ fun TaskItem(
                     .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                TaskText(
+                ActiveTaskText(
                     text = task.title,
                     modifier = Modifier
                         .padding(16.dp)
@@ -136,7 +137,7 @@ fun TaskItem(
                 )
 
                 AnimatedVisibility(expanded) {
-                    TaskText(
+                    ActiveTaskText(
                         text = task.description,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -153,7 +154,7 @@ fun TaskItem(
                 Icon(
                     painterResource(R.drawable.sharp_delete_24),
                     tint = Color.Red,
-                    contentDescription = "Delete"
+                    contentDescription = stringResource(R.string.delete)
                 )
             }
         }
@@ -164,8 +165,8 @@ fun TaskItem(
 
 @Preview
 @Composable
-fun TaskItemPreview() {
-    TaskItem(
+fun ActiveTaskItemPreview() {
+    SelectableTaskItem(
         task = TaskEntity(1, "Task1", "Description1"),
         onEditToggle = {},
         onDelete = {},

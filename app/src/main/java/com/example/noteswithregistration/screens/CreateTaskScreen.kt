@@ -20,35 +20,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.noteswithregistration.R
 import com.example.noteswithregistration.db.TaskEntity
 
 @Composable
-fun NewTask(viewModel: MainViewModel) {
+fun CreateTaskScreen(viewModel: MainViewModel) {
     val context = LocalContext.current
     var text by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+    val toastMessage = stringResource(R.string.please_fill_all_fields)
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        TaskField(
-            placeholder = "NewTask",
+        NewTaskField(
+            placeholder = stringResource(R.string.new_task),
             text = text,
             onValueChange = { text = it }
         )
         Box {
-            TaskField(
+            NewTaskField(
                 modifier = Modifier.fillMaxSize(),
                 text = description,
-                placeholder = "Description",
+                placeholder = stringResource(R.string.description),
                 onValueChange = { description = it }
             )
             IconButton(
                 onClick = {
                     if (text.isBlank() || description.isBlank()) {
-                        Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            toastMessage,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     } else {
                         val task = TaskEntity(title = text, description = description)
                         viewModel.addTask(task)
@@ -60,8 +66,8 @@ fun NewTask(viewModel: MainViewModel) {
                     .padding(10.dp)
             ) {
                 Icon(
-                    painterResource(com.example.noteswithregistration.R.drawable.outline_check_24),
-                    contentDescription = "Save",
+                    painterResource(R.drawable.outline_check_24),
+                    contentDescription = stringResource(R.string.Save),
                     modifier = Modifier.size(40.dp)
                 )
             }
@@ -70,7 +76,7 @@ fun NewTask(viewModel: MainViewModel) {
 }
 
 @Composable
-fun TaskField(
+fun NewTaskField(
     text: String,
     modifier: Modifier = Modifier,
     placeholder: String,
@@ -86,8 +92,27 @@ fun TaskField(
     )
 }
 
+@Composable
+fun NewTaskContent() {
+    Column(
+        Modifier.fillMaxSize(),
+    ) {
+        NewTaskField(
+            placeholder = "NewTask",
+            text = "preview",
+            onValueChange = {}
+        )
+        NewTaskField(
+            placeholder = "Description",
+            text = "preview description",
+            onValueChange = {},
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
 @Preview
 @Composable
 fun NewTaskPreview() {
-    NewTask(viewModel = viewModel())
+    NewTaskContent()
 }

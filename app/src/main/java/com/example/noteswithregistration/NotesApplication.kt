@@ -1,4 +1,4 @@
-package com.example.noteswithregistration.db
+package com.example.noteswithregistration
 
 import android.app.Application
 import com.example.noteswithregistration.koin.appModule

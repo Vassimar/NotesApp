@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -52,7 +53,7 @@ fun MainScreen() {
             )
         },
         bottomBar = {
-            NavigationBar{
+            NavigationBar {
                 NavigationBarItem(
                     selected = currentRoute == Routes.MainScreen.route,
                     onClick = {
@@ -64,10 +65,10 @@ fun MainScreen() {
                     icon = {
                         Icon(
                             painterResource(id = R.drawable.outline_home_24),
-                            contentDescription = "Home"
+                            contentDescription = stringResource(id = R.string.Home),
                         )
                     },
-                    label = { Text("Home") },
+                    label = { Text(stringResource(R.string.Home)) },
                 )
                 NavigationBarItem(
                     selected = currentRoute == Routes.TasksScreen.route,
@@ -80,10 +81,10 @@ fun MainScreen() {
                     icon = {
                         Icon(
                             painterResource(R.drawable.baseline_checklist_24),
-                            contentDescription = "Tasks",
+                            contentDescription = stringResource(R.string.Tasks),
                         )
                     },
-                    label = { Text("Tasks") },
+                    label = { Text(stringResource(R.string.Tasks)) },
                 )
             }
         }) { padding ->
@@ -93,36 +94,42 @@ fun MainScreen() {
             startDestination = Routes.MainScreen.route
         ) {
             composable(Routes.MainScreen.route) {
-                ActiveTasks(viewModel,navController)
+                ActiveTasksScreen(viewModel, navController)
             }
             composable(Routes.TasksScreen.route) {
                 TasksScreen(viewModel)
             }
             composable(Routes.NewTaskScreen.route) {
-                NewTask(viewModel)
+                CreateTaskScreen(viewModel)
             }
             composable(
                 route = Routes.EditTaskScreen.route,
                 arguments = listOf(navArgument("taskId") { type = NavType.IntType })
             ) { backStackEntry ->
                 val taskId = backStackEntry.arguments?.getInt("taskId") ?: return@composable
-                EditTaskScreen(taskId = taskId, viewModel = viewModel, navController = navController)
+                EditTaskScreen(
+                    taskId = taskId,
+                    viewModel = viewModel,
+                    navController = navController
+                )
             }
         }
     }
 }
+
+@Composable
 fun topBarText(controller: String?): String {
     return when (controller) {
         Routes.MainScreen.route -> {
-            "Active Tasks"
+            stringResource(id = R.string.active_tasks)
         }
 
         Routes.TasksScreen.route -> {
-            "Tasks"
+            stringResource(id = R.string.Tasks)
         }
 
         Routes.NewTaskScreen.route -> {
-            "New Task"
+            stringResource(id = R.string.new_task)
         }
 
         else -> {
@@ -130,6 +137,7 @@ fun topBarText(controller: String?): String {
         }
     }
 }
+
 @Composable
 fun TopBarButton(
     controller: String?, navController: NavHostController
@@ -146,12 +154,13 @@ fun TopBarButton(
                 Icon(
                     painterResource(id = R.drawable.add),
                     modifier = Modifier.size(40.dp),
-                    contentDescription = "More",
+                    contentDescription = stringResource(id = R.string.more),
                 )
             }
         }
     }
 }
+
 @Composable
 fun TopBarNavigationIcon(
     currentRoute: String?,
@@ -163,11 +172,12 @@ fun TopBarNavigationIcon(
         }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back"
+                contentDescription = stringResource(R.string.back)
             )
         }
     }
 }
+
 fun onClickNavigation(
     navController: NavHostController,
     destination: String,
@@ -177,7 +187,7 @@ fun onClickNavigation(
         launchSingleTop = true
         restoreState = true
         popUpTo(home) {
-            saveState
+            saveState = true
         }
     }
 }

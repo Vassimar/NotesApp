@@ -29,8 +29,8 @@ fun TasksScreen(viewModel: MainViewModel) {
             .fillMaxSize()
             .padding(4.dp)
     ) {
-        items(tasks) { task ->
-            TaskItem(
+        items(tasks, key = {it.id}) { task ->
+            SelectableTaskItem(
                 task = task,
                 onTaskClick = {
                     viewModel.toggleTask(task)
@@ -43,7 +43,7 @@ fun TasksScreen(viewModel: MainViewModel) {
 }
 
 @Composable
-fun TaskItem(
+fun SelectableTaskItem(
     task: TaskEntity,
     onTaskClick: () -> Unit,
 ) {

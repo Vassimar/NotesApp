@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">NoteswithRegistration</string>
+    <string name="Home">Home</string>
+    <string name="Tasks">Tasks</string>
+    <string name="Save">Save</string>
+    <string name="no_active_tasks">No Active Tasks</string>
+    <string name="please_fill_all_fields">Please fill all fields</string>
+    <string name="new_task">New Task</string>
+    <string name="active_tasks">Active Tasks</string>
+    <string name="more">More</string>
+    <string name="back">Back</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="description">Description</string>
 </resources>
