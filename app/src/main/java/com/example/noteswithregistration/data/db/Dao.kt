@@ -1,4 +1,4 @@
-package com.example.noteswithregistration.db
+package com.example.noteswithregistration.data.db
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -8,14 +8,14 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface TaskDao {
+internal interface TaskDao {
     @Query("SELECT * FROM TaskEntity")
-    fun getAll(): Flow<List<TaskEntity>>
+    fun observeAllTasks(): Flow<List<TaskEntity>>
 
     @Query("SELECT * FROM TaskEntity WHERE isActive = 1")
-    fun getActive(): Flow<List<TaskEntity>>
+    fun observeActiveTasks(): Flow<List<TaskEntity>>
     @Query(value = "SELECT * FROM TaskEntity WHERE id = :taskId")
-    fun getTaskById(taskId: Int): Flow<TaskEntity>
+    fun observeTaskById(taskId: Int?): Flow<TaskEntity?>
 
     @Insert
     suspend fun insert(taskEntity: TaskEntity)

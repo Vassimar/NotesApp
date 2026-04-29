@@ -1,4 +1,4 @@
-package com.example.noteswithregistration.screens
+package com.example.noteswithregistration.system.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
@@ -34,15 +34,31 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import com.example.noteswithregistration.R
-import com.example.noteswithregistration.db.TaskEntity
-import com.example.noteswithregistration.ui.theme.AppTypography
+import com.example.noteswithregistration.domain.model.Task
+import com.example.noteswithregistration.presentation.viewmodels.ActiveTaskScreenViewModel
+import com.example.noteswithregistration.system.theme.AppTypography
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ActiveTasksScreen(viewModel: MainViewModel, navController: NavController) {
+internal fun ActiveTasksScreen(
+    viewModel: ActiveTaskScreenViewModel = koinViewModel(),
+    onNavigateToEdit: (taskId: Int) -> Unit
+) {
     val tasks by viewModel.activeTasks.collectAsStateWithLifecycle()
+    ActiveTaskContent(
+        tasks = tasks,
+        onNavigateToEdit = onNavigateToEdit,
+        onDelete = { viewModel.deleteTask(it) }
+    )
+}
 
+@Composable
+private fun ActiveTaskContent(
+    tasks: List<Task>,
+    onNavigateToEdit: (taskId: Int) -> Unit,
+    onDelete: (task: Task) -> Unit
+) {
     if (tasks.isEmpty()) {
         Text(stringResource(R.string.no_active_tasks), modifier = Modifier.padding(16.dp))
         return
@@ -55,13 +71,14 @@ fun ActiveTasksScreen(viewModel: MainViewModel, navController: NavController) {
         items(tasks, key = { it.id }) { task ->
             SelectableTaskItem(
                 task = task,
-                onEditToggle = {
-                    navController.navigate(Routes.EditTaskScreen.withArgs(task.id))
+                onNavigationToEdit = {
+                    onNavigateToEdit(task.id)
                 },
-                onDelete = { viewModel.deleteTask(task) },
+                onDelete = { onDelete(task) },
             )
         }
     }
+
 }
 
 @Composable
@@ -85,8 +102,8 @@ fun ActiveTaskText(
 
 @Composable
 fun SelectableTaskItem(
-    task: TaskEntity,
-    onEditToggle: () -> Unit,
+    task: Task,
+    onNavigationToEdit: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -113,7 +130,7 @@ fun SelectableTaskItem(
         ) {
             IconButton(
                 onClick = {
-                    onEditToggle()
+                    onNavigationToEdit()
                 }
             ) {
                 Icon(
@@ -167,8 +184,8 @@ fun SelectableTaskItem(
 @Composable
 fun ActiveTaskItemPreview() {
     SelectableTaskItem(
-        task = TaskEntity(1, "Task1", "Description1"),
-        onEditToggle = {},
+        task = Task(1, "Task1", "Description1"),
+        onNavigationToEdit = {},
         onDelete = {},
     )
 }

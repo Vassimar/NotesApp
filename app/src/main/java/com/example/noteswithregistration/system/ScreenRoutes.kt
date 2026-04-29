@@ -1,4 +1,4 @@
-package com.example.noteswithregistration.screens
+package com.example.noteswithregistration.system
 
 sealed class Routes(val route: String) {
     object MainScreen : Routes("main_screen")

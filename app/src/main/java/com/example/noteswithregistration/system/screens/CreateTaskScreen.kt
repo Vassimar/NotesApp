@@ -1,4 +1,4 @@
-package com.example.noteswithregistration.screens
+package com.example.noteswithregistration.system.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -12,6 +12,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,59 +25,28 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.noteswithregistration.R
-import com.example.noteswithregistration.db.TaskEntity
+import com.example.noteswithregistration.presentation.viewmodels.CreateTaskViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CreateTaskScreen(viewModel: MainViewModel) {
+internal fun CreateTaskScreen(viewModel: CreateTaskViewModel = koinViewModel()) {
     val context = LocalContext.current
-    var text by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
     val toastMessage = stringResource(R.string.please_fill_all_fields)
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        NewTaskField(
-            placeholder = stringResource(R.string.new_task),
-            text = text,
-            onValueChange = { text = it }
-        )
-        Box {
-            NewTaskField(
-                modifier = Modifier.fillMaxSize(),
-                text = description,
-                placeholder = stringResource(R.string.description),
-                onValueChange = { description = it }
-            )
-            IconButton(
-                onClick = {
-                    if (text.isBlank() || description.isBlank()) {
-                        Toast.makeText(
-                            context,
-                            toastMessage,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        val task = TaskEntity(title = text, description = description)
-                        viewModel.addTask(task)
-                        text = ""
-                        description = ""
-                    }
-                }, modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(10.dp)
-            ) {
-                Icon(
-                    painterResource(R.drawable.outline_check_24),
-                    contentDescription = stringResource(R.string.Save),
-                    modifier = Modifier.size(40.dp)
-                )
-            }
+    LaunchedEffect(viewModel.showError) {
+        if (viewModel.showError) {
+            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
         }
     }
+    NewTaskContent(
+        onAddTask = { title, description ->
+            viewModel.addTask(title, description)
+        },
+    )
+
 }
 
 @Composable
-fun NewTaskField(
+private fun NewTaskField(
     text: String,
     modifier: Modifier = Modifier,
     placeholder: String,
@@ -93,26 +63,47 @@ fun NewTaskField(
 }
 
 @Composable
-fun NewTaskContent() {
+private fun NewTaskContent(
+    onAddTask: (title: String, description: String) -> Unit,
+) {
     Column(
-        Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
     ) {
+        var text by remember { mutableStateOf("") }
+        var description by remember { mutableStateOf("") }
         NewTaskField(
-            placeholder = "NewTask",
-            text = "preview",
-            onValueChange = {}
+            placeholder = stringResource(R.string.new_task),
+            text = text,
+            onValueChange = { text = it }
         )
-        NewTaskField(
-            placeholder = "Description",
-            text = "preview description",
-            onValueChange = {},
-            modifier = Modifier.fillMaxSize()
-        )
+        Box {
+            NewTaskField(
+                modifier = Modifier.fillMaxSize(),
+                text = description,
+                placeholder = stringResource(R.string.description),
+                onValueChange = { description = it }
+            )
+            IconButton(
+                onClick = {
+                    onAddTask(text, description)
+                }, modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(10.dp)
+            ) {
+                Icon(
+                    painterResource(R.drawable.outline_check_24),
+                    contentDescription = stringResource(R.string.Save),
+                    modifier = Modifier.size(40.dp)
+                )
+            }
+        }
     }
 }
 
 @Preview
 @Composable
-fun NewTaskPreview() {
-    NewTaskContent()
+private fun NewTaskPreview() {
+    NewTaskContent(
+        onAddTask = { _, _ -> }
+    )
 }

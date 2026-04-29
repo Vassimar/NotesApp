@@ -12,4 +12,6 @@
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="description">Description</string>
+    <string name="no_task_found">Error, task is not found</string>
+    <string name="edit_task">Edit Task</string>
 </resources>

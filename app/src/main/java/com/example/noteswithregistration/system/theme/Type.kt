@@ -1,10 +1,9 @@
-package com.example.noteswithregistration.ui.theme
+package com.example.noteswithregistration.system.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.FontFamily
-
-import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.googlefonts.GoogleFont
 import com.example.noteswithregistration.R
 
 

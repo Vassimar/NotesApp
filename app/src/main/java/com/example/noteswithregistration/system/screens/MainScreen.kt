@@ -1,4 +1,4 @@
-package com.example.noteswithregistration.screens
+package com.example.noteswithregistration.system.screens
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,12 +27,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.noteswithregistration.R
-import org.koin.androidx.compose.koinViewModel
+import com.example.noteswithregistration.system.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
-    val viewModel: MainViewModel = koinViewModel()
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -47,7 +46,7 @@ fun MainScreen() {
                 actions = {
                     TopBarButton(
                         navController = navController,
-                        controller = currentRoute,
+                        currentRoute = currentRoute,
                     )
                 }
             )
@@ -94,23 +93,22 @@ fun MainScreen() {
             startDestination = Routes.MainScreen.route
         ) {
             composable(Routes.MainScreen.route) {
-                ActiveTasksScreen(viewModel, navController)
+                ActiveTasksScreen(onNavigateToEdit = { taskId ->
+                    navController.navigate(Routes.EditTaskScreen.withArgs(taskId))
+                })
             }
             composable(Routes.TasksScreen.route) {
-                TasksScreen(viewModel)
+                TasksScreen()
             }
             composable(Routes.NewTaskScreen.route) {
-                CreateTaskScreen(viewModel)
+                CreateTaskScreen()
             }
             composable(
                 route = Routes.EditTaskScreen.route,
                 arguments = listOf(navArgument("taskId") { type = NavType.IntType })
-            ) { backStackEntry ->
-                val taskId = backStackEntry.arguments?.getInt("taskId") ?: return@composable
-                EditTaskScreen(
-                    taskId = taskId,
-                    viewModel = viewModel,
-                    navController = navController
+            ) {EditTaskScreen(
+                    onNavigateSave = { navController.popBackStack() },
+                    onNavigateBack = { navController.popBackStack() }
                 )
             }
         }
@@ -118,7 +116,7 @@ fun MainScreen() {
 }
 
 @Composable
-fun topBarText(controller: String?): String {
+private fun topBarText(controller: String?): String {
     return when (controller) {
         Routes.MainScreen.route -> {
             stringResource(id = R.string.active_tasks)
@@ -132,6 +130,10 @@ fun topBarText(controller: String?): String {
             stringResource(id = R.string.new_task)
         }
 
+        Routes.EditTaskScreen.route -> {
+            stringResource(id = R.string.edit_task)
+        }
+
         else -> {
             ""
         }
@@ -139,15 +141,14 @@ fun topBarText(controller: String?): String {
 }
 
 @Composable
-fun TopBarButton(
-    controller: String?, navController: NavHostController
+private fun TopBarButton(
+    currentRoute: String?, navController: NavHostController
 ) {
-    when (controller) {
+    when (currentRoute) {
         Routes.MainScreen.route, Routes.TasksScreen.route -> {
             IconButton(onClick = {
                 navController.navigate(Routes.NewTaskScreen.route) {
                     launchSingleTop = true
-                    restoreState = true
                 }
             })
             {
@@ -162,11 +163,11 @@ fun TopBarButton(
 }
 
 @Composable
-fun TopBarNavigationIcon(
+private fun TopBarNavigationIcon(
     currentRoute: String?,
     navController: NavHostController
 ) {
-    if (currentRoute == Routes.NewTaskScreen.route) {
+    if (currentRoute == Routes.NewTaskScreen.route || currentRoute == Routes.EditTaskScreen.route) {
         IconButton(onClick = {
             navController.popBackStack()
         }) {
@@ -178,16 +179,14 @@ fun TopBarNavigationIcon(
     }
 }
 
-fun onClickNavigation(
+private fun onClickNavigation(
     navController: NavHostController,
     destination: String,
     home: String = Routes.MainScreen.route
 ) {
     navController.navigate(destination) {
         launchSingleTop = true
-        restoreState = true
-        popUpTo(home) {
-            saveState = true
-        }
+        popUpTo(home)
+
     }
 }

@@ -1,7 +1,7 @@
-package com.example.noteswithregistration
+package com.example.noteswithregistration.system
 
 import android.app.Application
-import com.example.noteswithregistration.koin.appModule
+import com.example.noteswithregistration.di.koin.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 

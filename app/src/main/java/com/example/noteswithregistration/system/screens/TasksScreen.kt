@@ -1,4 +1,4 @@
-package com.example.noteswithregistration.screens
+package com.example.noteswithregistration.system.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,36 +15,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.noteswithregistration.db.TaskEntity
+import com.example.noteswithregistration.domain.model.Task
+import com.example.noteswithregistration.presentation.viewmodels.TasksScreenViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TasksScreen(viewModel: MainViewModel) {
+internal fun TasksScreen(viewModel: TasksScreenViewModel = koinViewModel()) {
     val tasks by viewModel.allTasks.collectAsStateWithLifecycle()
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(4.dp)
-    ) {
-        items(tasks, key = {it.id}) { task ->
-            SelectableTaskItem(
-                task = task,
-                onTaskClick = {
-                    viewModel.toggleTask(task)
-                },
-
-            )
+    TasksScreenContent(
+        tasks = tasks,
+        onTaskClick = {
+            viewModel.toggleTask(it)
         }
-
-    }
+    )
 }
 
 @Composable
 fun SelectableTaskItem(
-    task: TaskEntity,
+    task: Task,
     onTaskClick: () -> Unit,
 ) {
     Row(
@@ -74,37 +65,23 @@ fun SelectableTaskItem(
         thickness = 1.dp,
     )
 }
+
 @Composable
-private fun Content(
-    tasks: List<TaskEntity>,
-    onTaskClick: (task: TaskEntity) -> Unit,
+private fun TasksScreenContent(
+    tasks: List<Task>,
+    onTaskClick: (task: Task) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(4.dp)
     ) {
-        items(tasks) { task ->
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clickable {
-                        onTaskClick(task)
-                    },
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-
-            ) {
-                Text(text = task.title, color = Color.Yellow)
-                RadioButton(
-                    selected = task.isActive,
-                    onClick = {
-                        onTaskClick(task)
-                    }
-                )
-            }
-            HorizontalDivider(
-                thickness = 1.dp,
+        items(tasks, key = { it.id }) { task ->
+            SelectableTaskItem(
+                task = task,
+                onTaskClick = {
+                    onTaskClick(task)
+                }
             )
         }
     }
@@ -113,10 +90,10 @@ private fun Content(
 @Preview
 @Composable
 fun TasksScreenPreview() {
-    Content(
+    TasksScreenContent(
         tasks = listOf(
-            TaskEntity(1, "Task1", "Description1"),
-            TaskEntity(2, "Task2", "Description2"),
+            Task(1, "Task1", "Description1"),
+            Task(2, "Task2", "Description2"),
         ),
         onTaskClick = {}
     )

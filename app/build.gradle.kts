@@ -45,7 +45,6 @@ android {
 dependencies {
     val room_version = "2.8.4"
     implementation(libs.compose.material.icons)
-
     implementation(libs.material3)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
