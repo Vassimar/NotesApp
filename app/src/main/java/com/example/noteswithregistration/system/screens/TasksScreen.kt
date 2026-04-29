@@ -34,7 +34,7 @@ internal fun TasksScreen(viewModel: TasksScreenViewModel = koinViewModel()) {
 }
 
 @Composable
-fun SelectableTaskItem(
+private fun ToggleTaskItem(
     task: Task,
     onTaskClick: () -> Unit,
 ) {
@@ -77,7 +77,7 @@ private fun TasksScreenContent(
             .padding(4.dp)
     ) {
         items(tasks, key = { it.id }) { task ->
-            SelectableTaskItem(
+            ToggleTaskItem(
                 task = task,
                 onTaskClick = {
                     onTaskClick(task)

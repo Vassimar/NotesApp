@@ -69,7 +69,7 @@ private fun ActiveTaskContent(
             .padding(4.dp)
     ) {
         items(tasks, key = { it.id }) { task ->
-            SelectableTaskItem(
+            ActiveTaskItem(
                 task = task,
                 onNavigationToEdit = {
                     onNavigateToEdit(task.id)
@@ -101,7 +101,7 @@ fun ActiveTaskText(
 }
 
 @Composable
-fun SelectableTaskItem(
+private fun ActiveTaskItem(
     task: Task,
     onNavigationToEdit: () -> Unit,
     onDelete: () -> Unit,
@@ -183,7 +183,7 @@ fun SelectableTaskItem(
 @Preview
 @Composable
 fun ActiveTaskItemPreview() {
-    SelectableTaskItem(
+    ActiveTaskItem(
         task = Task(1, "Task1", "Description1"),
         onNavigationToEdit = {},
         onDelete = {},
