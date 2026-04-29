@@ -29,12 +29,20 @@ import androidx.navigation.navArgument
 import com.example.noteswithregistration.R
 import com.example.noteswithregistration.system.Routes
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+internal fun MainScreen() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    MainScreenContent(navController, currentRoute)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun MainScreenContent(
+    navController: NavHostController,
+    currentRoute: String?
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -106,18 +114,20 @@ fun MainScreen() {
             composable(
                 route = Routes.EditTaskScreen.route,
                 arguments = listOf(navArgument("taskId") { type = NavType.IntType })
-            ) {EditTaskScreen(
+            ) {
+                EditTaskScreen(
                     onNavigateSave = { navController.popBackStack() },
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
         }
     }
+
 }
 
 @Composable
-private fun topBarText(controller: String?): String {
-    return when (controller) {
+private fun topBarText(currentRoute: String?): String {
+    return when (currentRoute) {
         Routes.MainScreen.route -> {
             stringResource(id = R.string.active_tasks)
         }
@@ -187,6 +197,5 @@ private fun onClickNavigation(
     navController.navigate(destination) {
         launchSingleTop = true
         popUpTo(home)
-
     }
 }
