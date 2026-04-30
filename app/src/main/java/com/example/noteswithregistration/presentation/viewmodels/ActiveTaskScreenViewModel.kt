@@ -9,13 +9,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ActiveTaskScreenViewModel(
-    private val repository: TaskRepository
+    private val repository: TaskRepository,
 ) : ViewModel() {
-    val activeTasks = repository.observeActiveTasks().stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        emptyList()
-    )
+    val activeTasks =
+        repository.observeActiveTasks().stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList(),
+        )
 
     fun deleteTask(task: Task) {
         viewModelScope.launch {

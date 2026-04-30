@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class EditTaskScreenViewModel(
     savedStateHandle: SavedStateHandle,
-    private val repository: TaskRepository
+    private val repository: TaskRepository,
 ) : ViewModel() {
     fun updateTask(task: Task) {
         viewModelScope.launch {
@@ -25,18 +25,18 @@ class EditTaskScreenViewModel(
     private val taskId: Int = savedStateHandle["taskId"]!!
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val editTaskUIState = repository.observeTaskById(taskId)
-        .map { task ->
-            if (task == null) {
-                EditTaskUIState.Empty
-            } else {
-                EditTaskUIState.Loaded(task)
+    val editTaskUIState =
+        repository.observeTaskById(taskId)
+            .map { task ->
+                if (task == null) {
+                    EditTaskUIState.Empty
+                } else {
+                    EditTaskUIState.Loaded(task)
+                }
             }
-        }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            EditTaskUIState.Loading
-        )
-
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(5000),
+                EditTaskUIState.Loading,
+            )
 }

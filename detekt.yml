@@ -1,0 +1,22 @@
+naming:
+  FunctionNaming:
+    ignoreAnnotated:
+      - 'Composable'
+      - 'Preview'
+
+style:
+  MagicNumber:
+    ignoreAnnotated:
+      - 'Composable'
+    ignoreNumbers:
+      - '-1'
+      - '0'
+      - '1'
+      - '2'
+    ignorePropertyDeclaration: true  # ← this fixes Color.kt magic numbers
+    ignoreConstantDeclaration: true
+
+complexity:
+  LongMethod:
+    ignoreAnnotated:
+      - 'Composable'  # ← composables are naturally long

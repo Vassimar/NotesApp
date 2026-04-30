@@ -41,7 +41,7 @@ internal fun MainScreen() {
 @Composable
 private fun MainScreenContent(
     navController: NavHostController,
-    currentRoute: String?
+    currentRoute: String?,
 ) {
     Scaffold(
         topBar = {
@@ -56,7 +56,7 @@ private fun MainScreenContent(
                         navController = navController,
                         currentRoute = currentRoute,
                     )
-                }
+                },
             )
         },
         bottomBar = {
@@ -94,11 +94,12 @@ private fun MainScreenContent(
                     label = { Text(stringResource(R.string.Tasks)) },
                 )
             }
-        }) { padding ->
+        },
+    ) { padding ->
         NavHost(
             modifier = Modifier.padding(padding),
             navController = navController,
-            startDestination = Routes.MainScreen.route
+            startDestination = Routes.MainScreen.route,
         ) {
             composable(Routes.MainScreen.route) {
                 ActiveTasksScreen(onNavigateToEdit = { taskId ->
@@ -113,16 +114,15 @@ private fun MainScreenContent(
             }
             composable(
                 route = Routes.EditTaskScreen.route,
-                arguments = listOf(navArgument("taskId") { type = NavType.IntType })
+                arguments = listOf(navArgument("taskId") { type = NavType.IntType }),
             ) {
                 EditTaskScreen(
                     onNavigateSave = { navController.popBackStack() },
-                    onNavigateBack = { navController.popBackStack() }
+                    onNavigateBack = { navController.popBackStack() },
                 )
             }
         }
     }
-
 }
 
 @Composable
@@ -152,7 +152,8 @@ private fun topBarText(currentRoute: String?): String {
 
 @Composable
 private fun TopBarButton(
-    currentRoute: String?, navController: NavHostController
+    currentRoute: String?,
+    navController: NavHostController,
 ) {
     when (currentRoute) {
         Routes.MainScreen.route, Routes.TasksScreen.route -> {
@@ -160,8 +161,7 @@ private fun TopBarButton(
                 navController.navigate(Routes.NewTaskScreen.route) {
                     launchSingleTop = true
                 }
-            })
-            {
+            }) {
                 Icon(
                     painterResource(id = R.drawable.add),
                     modifier = Modifier.size(40.dp),
@@ -175,7 +175,7 @@ private fun TopBarButton(
 @Composable
 private fun TopBarNavigationIcon(
     currentRoute: String?,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     if (currentRoute == Routes.NewTaskScreen.route || currentRoute == Routes.EditTaskScreen.route) {
         IconButton(onClick = {
@@ -183,7 +183,7 @@ private fun TopBarNavigationIcon(
         }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = stringResource(R.string.back)
+                contentDescription = stringResource(R.string.back),
             )
         }
     }
@@ -192,7 +192,7 @@ private fun TopBarNavigationIcon(
 private fun onClickNavigation(
     navController: NavHostController,
     destination: String,
-    home: String = Routes.MainScreen.route
+    home: String = Routes.MainScreen.route,
 ) {
     navController.navigate(destination) {
         launchSingleTop = true

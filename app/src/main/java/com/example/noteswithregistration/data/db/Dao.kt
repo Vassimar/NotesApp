@@ -14,6 +14,7 @@ internal interface TaskDao {
 
     @Query("SELECT * FROM TaskEntity WHERE isActive = 1")
     fun observeActiveTasks(): Flow<List<TaskEntity>>
+
     @Query(value = "SELECT * FROM TaskEntity WHERE id = :taskId")
     fun observeTaskById(taskId: Int?): Flow<TaskEntity?>
 
@@ -25,5 +26,4 @@ internal interface TaskDao {
 
     @Delete
     suspend fun delete(taskEntity: TaskEntity)
-
 }

@@ -9,18 +9,18 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class TasksScreenViewModel(
-    private val repository: TaskRepository
+    private val repository: TaskRepository,
 ) : ViewModel() {
-    val allTasks = repository.observeAllTasks().stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        emptyList()
-    )
+    val allTasks =
+        repository.observeAllTasks().stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList(),
+        )
 
     fun toggleTask(task: Task) {
         viewModelScope.launch {
             repository.updateTask(task.copy(isActive = !task.isActive))
         }
     }
-
 }

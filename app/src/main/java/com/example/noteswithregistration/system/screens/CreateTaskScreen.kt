@@ -42,7 +42,6 @@ internal fun CreateTaskScreen(viewModel: CreateTaskViewModel = koinViewModel()) 
             viewModel.addTask(title, description)
         },
     )
-
 }
 
 @Composable
@@ -50,7 +49,7 @@ private fun NewTaskField(
     text: String,
     modifier: Modifier = Modifier,
     placeholder: String,
-    onValueChange: (String) -> Unit = {}
+    onValueChange: (String) -> Unit = {},
 ) {
     TextField(
         modifier = modifier.fillMaxWidth(),
@@ -58,42 +57,42 @@ private fun NewTaskField(
         onValueChange = {
             onValueChange(it)
         },
-        placeholder = { Text(placeholder) }
+        placeholder = { Text(placeholder) },
     )
 }
 
 @Composable
-private fun NewTaskContent(
-    onAddTask: (title: String, description: String) -> Unit,
-) {
+private fun NewTaskContent(onAddTask: (title: String, description: String) -> Unit) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         var text by remember { mutableStateOf("") }
         var description by remember { mutableStateOf("") }
         NewTaskField(
             placeholder = stringResource(R.string.new_task),
             text = text,
-            onValueChange = { text = it }
+            onValueChange = { text = it },
         )
         Box {
             NewTaskField(
                 modifier = Modifier.fillMaxSize(),
                 text = description,
                 placeholder = stringResource(R.string.description),
-                onValueChange = { description = it }
+                onValueChange = { description = it },
             )
             IconButton(
                 onClick = {
                     onAddTask(text, description)
-                }, modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(10.dp)
+                },
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(10.dp),
             ) {
                 Icon(
                     painterResource(R.drawable.outline_check_24),
                     contentDescription = stringResource(R.string.Save),
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(40.dp),
                 )
             }
         }
@@ -104,6 +103,6 @@ private fun NewTaskContent(
 @Composable
 private fun NewTaskPreview() {
     NewTaskContent(
-        onAddTask = { _, _ -> }
+        onAddTask = { _, _ -> },
     )
 }

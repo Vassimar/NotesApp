@@ -4,14 +4,16 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     id("dev.detekt") version ("2.0.0-alpha.2")
     id("com.google.devtools.ksp")
+    id("org.jlleitschuh.gradle.ktlint") version "14.2.0"
 }
 
 android {
     namespace = "com.example.noteswithregistration"
     compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
+        version =
+            release(36) {
+                minorApiLevel = 1
+            }
     }
 
     defaultConfig {
@@ -29,7 +31,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -43,7 +45,6 @@ android {
 }
 
 dependencies {
-    val room_version = "2.8.4"
     implementation(libs.compose.material.icons)
     implementation(libs.material3)
     implementation(libs.androidx.core.ktx)
@@ -63,10 +64,20 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    implementation("androidx.room:room-runtime:${room_version}")
-    ksp("androidx.room:room-compiler:$room_version")
-    implementation("io.insert-koin:koin-android:3.5.6")
-    implementation("io.insert-koin:koin-androidx-compose:3.5.6")
-
-
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+}
+ktlint {
+    version.set("1.0.1")
+    android.set(true)
+    ignoreFailures.set(false)
+    filter {
+        exclude("**/*.gradle.kts")
+    }
+}
+detekt {
+    config.setFrom("$rootDir/detekt.yml")
+    ignoreFailures = false
 }

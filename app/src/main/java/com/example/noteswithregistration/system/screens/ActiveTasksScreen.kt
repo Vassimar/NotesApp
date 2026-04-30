@@ -43,13 +43,13 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 internal fun ActiveTasksScreen(
     viewModel: ActiveTaskScreenViewModel = koinViewModel(),
-    onNavigateToEdit: (taskId: Int) -> Unit
+    onNavigateToEdit: (taskId: Int) -> Unit,
 ) {
     val tasks by viewModel.activeTasks.collectAsStateWithLifecycle()
     ActiveTaskContent(
         tasks = tasks,
         onNavigateToEdit = onNavigateToEdit,
-        onDelete = { viewModel.deleteTask(it) }
+        onDelete = { viewModel.deleteTask(it) },
     )
 }
 
@@ -57,16 +57,17 @@ internal fun ActiveTasksScreen(
 private fun ActiveTaskContent(
     tasks: List<Task>,
     onNavigateToEdit: (taskId: Int) -> Unit,
-    onDelete: (task: Task) -> Unit
+    onDelete: (task: Task) -> Unit,
 ) {
     if (tasks.isEmpty()) {
         Text(stringResource(R.string.no_active_tasks), modifier = Modifier.padding(16.dp))
         return
     }
     LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(4.dp),
     ) {
         items(tasks, key = { it.id }) { task ->
             ActiveTaskItem(
@@ -78,7 +79,6 @@ private fun ActiveTaskContent(
             )
         }
     }
-
 }
 
 @Composable
@@ -88,7 +88,7 @@ fun ActiveTaskText(
     style: TextStyle,
     textAlign: TextAlign = TextAlign.Start,
     maxLines: Int,
-    overflow: TextOverflow = TextOverflow.Ellipsis
+    overflow: TextOverflow = TextOverflow.Ellipsis,
 ) {
     Text(
         text = text,
@@ -96,7 +96,7 @@ fun ActiveTaskText(
         overflow = overflow,
         style = style,
         textAlign = textAlign,
-        maxLines = maxLines
+        maxLines = maxLines,
     )
 }
 
@@ -110,75 +110,78 @@ private fun ActiveTaskItem(
     var expanded by remember(task.id) { mutableStateOf(false) }
     val titleStyle = if (expanded) AppTypography.titleLarge else AppTypography.titleMedium
     OutlinedCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clickable {
-                expanded = !expanded
-            },
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .clickable {
+                    expanded = !expanded
+                },
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-        shape = CardDefaults.elevatedShape
+        shape = CardDefaults.elevatedShape,
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(
                 onClick = {
                     onNavigationToEdit()
-                }
+                },
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = stringResource(R.string.edit)
+                    contentDescription = stringResource(R.string.edit),
                 )
             }
             Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 ActiveTaskText(
                     text = task.title,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth(),
                     style = titleStyle,
-                    maxLines = if (expanded) Int.MAX_VALUE else 1
+                    maxLines = if (expanded) Int.MAX_VALUE else 1,
                 )
 
                 AnimatedVisibility(expanded) {
                     ActiveTaskText(
                         text = task.description,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
                         style = AppTypography.bodyMedium,
-                        maxLines = Int.MAX_VALUE
+                        maxLines = Int.MAX_VALUE,
                     )
                 }
             }
             IconButton(
                 onClick = onDelete,
-                modifier = Modifier
+                modifier = Modifier,
             ) {
                 Icon(
                     painterResource(R.drawable.sharp_delete_24),
                     tint = Color.Red,
-                    contentDescription = stringResource(R.string.delete)
+                    contentDescription = stringResource(R.string.delete),
                 )
             }
         }
-
     }
 }
-
 
 @Preview
 @Composable

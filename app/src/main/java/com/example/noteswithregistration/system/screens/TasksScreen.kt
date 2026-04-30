@@ -29,7 +29,7 @@ internal fun TasksScreen(viewModel: TasksScreenViewModel = koinViewModel()) {
         tasks = tasks,
         onTaskClick = {
             viewModel.toggleTask(it)
-        }
+        },
     )
 }
 
@@ -39,26 +39,27 @@ private fun ToggleTaskItem(
     onTaskClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                onTaskClick()
-            },
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onTaskClick()
+                },
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = task.title,
-            modifier = Modifier
-                .weight(1f)
-                .padding(16.dp)
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .padding(16.dp),
         )
         RadioButton(
             selected = task.isActive,
             onClick = {
                 onTaskClick()
-            }
+            },
         )
     }
     HorizontalDivider(
@@ -72,16 +73,17 @@ private fun TasksScreenContent(
     onTaskClick: (task: Task) -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(4.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(4.dp),
     ) {
         items(tasks, key = { it.id }) { task ->
             ToggleTaskItem(
                 task = task,
                 onTaskClick = {
                     onTaskClick(task)
-                }
+                },
             )
         }
     }
@@ -91,10 +93,11 @@ private fun TasksScreenContent(
 @Composable
 fun TasksScreenPreview() {
     TasksScreenContent(
-        tasks = listOf(
-            Task(1, "Task1", "Description1"),
-            Task(2, "Task2", "Description2"),
-        ),
-        onTaskClick = {}
+        tasks =
+            listOf(
+                Task(1, "Task1", "Description1"),
+                Task(2, "Task2", "Description2"),
+            ),
+        onTaskClick = {},
     )
 }

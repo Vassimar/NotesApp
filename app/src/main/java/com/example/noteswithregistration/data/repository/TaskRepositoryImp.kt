@@ -12,7 +12,6 @@ internal class TaskRepositoryImp(private val taskDao: TaskDao) : TaskRepository 
     override fun observeActiveTasks(): Flow<List<Task>> {
         return taskDao.observeActiveTasks().map { taskEntities ->
             taskEntities.map { it.toDomain() }
-
         }
     }
 
@@ -37,5 +36,4 @@ internal class TaskRepositoryImp(private val taskDao: TaskDao) : TaskRepository 
     override suspend fun deleteTask(task: Task) {
         taskDao.delete(task.toEntity())
     }
-
 }

@@ -10,12 +10,15 @@ import com.example.noteswithregistration.domain.repository.TaskRepository
 import kotlinx.coroutines.launch
 
 class CreateTaskViewModel(
-    private val repository: TaskRepository
+    private val repository: TaskRepository,
 ) : ViewModel() {
     var showError by mutableStateOf(false)
         private set
 
-    fun addTask(title: String, description: String) {
+    fun addTask(
+        title: String,
+        description: String,
+    ) {
         if (title.isBlank() || description.isBlank()) {
             showError = true
             return

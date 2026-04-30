@@ -29,12 +29,11 @@ import com.example.noteswithregistration.presentation.viewmodels.EditTaskScreenV
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-
 internal fun EditTaskScreen(
     viewModel: EditTaskScreenViewModel = koinViewModel(),
     onNavigateSave: () -> Unit,
-    onNavigateBack: () -> Unit
-) {
+    onNavigateBack: () -> Unit,
+) { // comment, testing Ktlint
     val uiState by viewModel.editTaskUIState.collectAsStateWithLifecycle()
     LaunchedEffect(uiState) {
         if (uiState is EditTaskUIState.Empty) {
@@ -44,7 +43,7 @@ internal fun EditTaskScreen(
     when (uiState) {
         is EditTaskUIState.Loading -> {
             CircularProgressIndicator(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
         }
 
@@ -55,7 +54,7 @@ internal fun EditTaskScreen(
                 onSaveChanges = {
                     viewModel.updateTask(it)
                     onNavigateSave()
-                }
+                },
             )
         }
         else -> {}
@@ -71,12 +70,12 @@ private fun EditTaskContent(
     var description by remember(task.id) { mutableStateOf(task.description) }
     val scrollState = rememberScrollState()
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(scrollState),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Card(modifier = Modifier.fillMaxWidth()) {
             TextField(
@@ -84,7 +83,7 @@ private fun EditTaskContent(
                 value = title,
                 onValueChange = {
                     title = it
-                }
+                },
             )
         }
         Card {
@@ -93,13 +92,13 @@ private fun EditTaskContent(
                 value = description,
                 onValueChange = {
                     description = it
-                }
+                },
             )
         }
         Button(
             onClick = {
                 onSaveChanges(task.copy(title = title, description = description))
-            }
+            },
         ) {
             Text(stringResource(R.string.Save))
         }

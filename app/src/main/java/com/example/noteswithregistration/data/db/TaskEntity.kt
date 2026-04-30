@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 internal data class TaskEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val title :String,
+    val title: String,
     val description: String,
-    val isActive: Boolean = false
+    val isActive: Boolean = false,
 )
