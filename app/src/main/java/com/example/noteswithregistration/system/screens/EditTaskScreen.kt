@@ -33,7 +33,7 @@ internal fun EditTaskScreen(
     viewModel: EditTaskScreenViewModel = koinViewModel(),
     onNavigateSave: () -> Unit,
     onNavigateBack: () -> Unit,
-) { // comment, testing Ktlint
+) {
     val uiState by viewModel.editTaskUIState.collectAsStateWithLifecycle()
     LaunchedEffect(uiState) {
         if (uiState is EditTaskUIState.Empty) {

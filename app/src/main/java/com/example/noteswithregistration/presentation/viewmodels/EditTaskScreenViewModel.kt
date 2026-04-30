@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.noteswithregistration.domain.model.Task
 import com.example.noteswithregistration.domain.repository.TaskRepository
 import com.example.noteswithregistration.presentation.uistate.EditTaskUIState
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -23,8 +22,6 @@ class EditTaskScreenViewModel(
     }
 
     private val taskId: Int = savedStateHandle["taskId"]!!
-
-    @OptIn(ExperimentalCoroutinesApi::class)
     val editTaskUIState =
         repository.observeTaskById(taskId)
             .map { task ->
